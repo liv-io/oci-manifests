@@ -3,7 +3,7 @@
 ## Index
 
 - [About](#about)
-  - [Features](#features)
+- [Features](#features)
 - [License](#license)
 - [Credits](#credits)
 - [Appendix](#appendix)
@@ -12,12 +12,11 @@
 
 `oci-manifests` is a collection of well curated OCI manifests.
 
-### Features
+## Features
 
 - Manifests follow the secure-by-default principle
 - Manifests are mostly self-contained and dependencies avoided
 - Parameters are documented with examples
-- Manifests contain a changelog
 
 ## License
 
