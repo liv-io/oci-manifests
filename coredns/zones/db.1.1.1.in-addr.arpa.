@@ -1,0 +1,19 @@
+$ORIGIN 1.1.1.in-addr.arpa. ; base domain-name
+$TTL 1d                     ; default ttl
+
+@        IN        SOA        ns.example.com. hostmaster.example.com. (
+                                2026090900 ; serial
+                                4h         ; refresh
+                                30m        ; retry
+                                4d         ; expiry
+                                1h         ; minimum
+                                )
+
+@        IN        NS         ns1.example.com.
+@        IN        NS         ns2.example.com.
+
+10       IN        PTR        edge-dns.example.com.
+11       IN        PTR        ns1.example.com.
+12       IN        PTR        ns2.example.com.
+
+20       IN        PTR        edge-web.example.com.

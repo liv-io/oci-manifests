@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: coredns
+
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: coredns
+  template:
+    metadata:
+      labels:
+        app: coredns
+    spec:
+      containers:
+      - name: coredns
+        image: coredns # CHANGEME
+        imagePullPolicy: IfNotPresent
+        ports:
+        - name: http
+          containerPort: 8080
+          protocol: TCP
+        - name: dns-tcp
+          hostPort: 53
+          containerPort: 1053
+          protocol: TCP
+        - name: dns-udp
+          hostPort: 53
+          containerPort: 1053
+          protocol: UDP
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          privileged: false
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
+          runAsGroup: 10000
+          runAsUser: 10000
+        volumeMounts:
+        - name: config
+          mountPath: /var/local/coredns/config
+        - name: zones
+          mountPath: /var/local/coredns/zones
+      imagePullSecrets:
+      - name: registry # CHANGEME
+      volumes:
+      - name: config
+        emptyDir:
+          medium: Memory
+          sizeLimit: 4Mi
+      - name: zones
+        configMap:
+          name: zones
