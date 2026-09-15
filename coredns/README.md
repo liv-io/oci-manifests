@@ -29,8 +29,8 @@ OCI manifest for `coredns`.
 |Name|Type|Version|
 |:---|:---|:---|
 |[coredns](https://github.com/liv-io/oci-containers/tree/main/coredns)|Container|`1.14.7-1`|
-|[local-path-provisioner](https://github.com/rancher/local-path-provisioner)|Helm|`41.5.0`|
-|[traefik-helm-chart](https://github.com/traefik/traefik-helm-chart)|Kustomize|`0.0.37`|
+|[local-path-provisioner](https://github.com/rancher/local-path-provisioner)|Kustomize|`0.0.37`|
+|[traefik-helm-chart](https://github.com/traefik/traefik-helm-chart)|Helm|`41.5.0`|
 
 ## Deployment
 
