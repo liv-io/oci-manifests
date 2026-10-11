@@ -1,0 +1,72 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: lnd
+
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: lnd
+  template:
+    metadata:
+      labels:
+        app: lnd
+    spec:
+      containers:
+      - name: lnd
+        image: lnd # CHANGEME
+        imagePullPolicy: IfNotPresent
+        workingDir: /
+        ports:
+        - name: network
+          containerPort: 9735
+          protocol: TCP
+        - name: rest
+          containerPort: 8080
+          protocol: TCP
+        env:
+        - name: BITCOIND_RPCHOST # CHANGEME
+          value: "ext.btc:18332"
+        - name: BITCOIND_RPCPASS # CHANGEME
+          valueFrom:
+            secretKeyRef:
+              name: lnd-secrets
+              key: BITCOIND_RPCPASS
+        - name: BITCOIND_RPCUSER # CHANGEME
+          value: "satoshi"
+        - name: BITCOIND_ZMQPUBRAWBLOCK # CHANGEME
+          value: "tcp://ext.btc:5557"
+        - name: BITCOIND_ZMQPUBRAWTX # CHANGEME
+          value: "tcp://ext.btc:5558"
+        - name: LISTEN
+          value: "0.0.0.0:9735"
+        - name: RESTLISTEN
+          value: "0.0.0.0:8080"
+        - name: WALLET_PASSWORD # CHANGEME
+          valueFrom:
+            secretKeyRef:
+              name: lnd-secrets
+              key: WALLET_PASSWORD
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          privileged: false
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
+          runAsGroup: 10000
+          runAsUser: 10000
+        volumeMounts:
+        - name: data
+          mountPath: /var/local/lnd/data
+      imagePullSecrets:
+      - name: registry # CHANGEME
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: data

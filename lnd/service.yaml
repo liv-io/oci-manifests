@@ -1,0 +1,36 @@
+apiVersion: v1
+kind: Service
+
+metadata:
+  name: lnd
+  annotations:
+    traefik.ingress.kubernetes.io/service.serversscheme: "https"
+    traefik.ingress.kubernetes.io/service.serverstransport: "lnd-lnd@kubernetescrd"
+
+spec:
+  type: ClusterIP
+  ports:
+  - name: rest
+    port: 8080
+    targetPort: 8080
+    protocol: TCP
+  selector:
+    app: lnd
+
+---
+
+apiVersion: v1
+kind: Service
+
+metadata:
+  name: network
+
+spec:
+  type: LoadBalancer
+  ports:
+  - name: network
+    port: 9735
+    targetPort: 9735
+    protocol: TCP
+  selector:
+    app: lnd
