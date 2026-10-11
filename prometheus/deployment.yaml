@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: prometheus
+
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: prometheus
+  template:
+    metadata:
+      labels:
+        app: prometheus
+    spec:
+      securityContext:
+        fsGroup: 65534
+        fsGroupChangePolicy: Always
+      containers:
+      - name: prometheus
+        image: quay.io/prometheus/prometheus
+        imagePullPolicy: IfNotPresent
+        workingDir: /prometheus
+        args:
+          - "--config.file=/etc/prometheus/prometheus.yaml"
+          - "--storage.tsdb.path=/prometheus"
+          - "--storage.tsdb.retention.time=3y"
+          - "--web.enable-admin-api"
+        ports:
+        - name: http
+          containerPort: 9090
+          protocol: TCP
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          privileged: false
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
+          runAsGroup: 65534
+          runAsUser: 65534
+        volumeMounts:
+        - name: config
+          mountPath: /etc/prometheus
+        - name: storage
+          mountPath: /prometheus
+      volumes:
+      - name: config
+        configMap:
+          name: config
+      - name: storage
+        persistentVolumeClaim:
+          claimName: storage

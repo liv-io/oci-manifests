@@ -1,0 +1,65 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+alerting:
+  alertmanagers:
+  - static_configs:
+    - targets:
+       - "alertmanager.alertmanager:9093"
+
+rule_files:
+  - "/etc/prometheus/rules.yaml"
+
+scrape_configs:
+  - job_name: alertmanager
+    static_configs:
+      - { targets: ["alertmanager.alertmanager:9093"], labels: { instance: "core-observe" } }
+
+  - job_name: prometheus
+    static_configs:
+      - { targets: ["prometheus.prometheus:9090"], labels: { instance: "core-observe" } }
+
+  - job_name: ipmi_exporter
+    static_configs:
+      - { targets: ["host.example.com:9290"], labels: { instance: "host" } }
+
+  - job_name: monit_exporter
+    static_configs:
+      - { targets: ["host.example.com:9388"], labels: { instance: "host" } }
+
+  - job_name: node_exporter
+    static_configs:
+      - { targets: ["host.example.com:9100"], labels: { instance: "host" } }
+
+  - job_name: smokeping_prober
+    static_configs:
+      - { targets: ["smokeping.smokeping:9374"], labels: { instance: "core-observe" } }
+
+  - job_name: icmp_ip4
+    metrics_path: /probe
+    params:
+      module: [icmp_ip4]
+    static_configs:
+      - { targets: ["host.example.com"], labels: { instance: "host" } }
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: target
+      - target_label: __address__
+        replacement: blackbox.blackbox:9115
+
+  - job_name: http_ip4_basic
+    metrics_path: /probe
+    params:
+      module: [http_ip4_basic]
+    static_configs:
+      - { targets: ["https://example.com"] }
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: blackbox.blackbox:9115
