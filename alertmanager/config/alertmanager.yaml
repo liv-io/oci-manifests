@@ -1,0 +1,28 @@
+global:
+  smtp_from: "core-observe@example.com"
+  smtp_hello: "core-observe.example.com"
+  smtp_smarthost: "mail.example.com:25"
+  smtp_auth_username: ""
+  smtp_auth_password: ""
+  smtp_require_tls: false
+
+route:
+  receiver: "username"
+  group_by: ['instance', 'alertname']
+  group_wait: 1m
+  group_interval: 30m
+  repeat_interval: 8h
+  routes:
+    - matchers:
+        - severity = "critical"
+      receiver: "username"
+
+inhibit_rules:
+  - source_matchers: [ severity = "critical" ]
+    target_matchers: [ severity = "warning" ]
+    equal: ["alertname"]
+
+receivers:
+  - name: "username"
+    email_configs:
+      - to: "username@example.com"
