@@ -263,14 +263,10 @@ OCI manifest for `coredns`.
 > [!TIP]
 > For reference, consult example [zone](https://github.com/liv-io/oci-manifests/tree/main/coredns/zones) files
 
-- Render manifest
+- Render and apply manifest
   ```
   kubectl apply --dry-run=client -k ./apps/coredns/
   kubectl apply --dry-run=server -k ./apps/coredns/
-  ```
-
-- Apply manifest
-  ```
   kubectl apply -k ./apps/coredns/
   ```
 
