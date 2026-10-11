@@ -59,7 +59,7 @@ spec:
       volumes:
       - name: config
         emptyDir:
-          sizeLimit: 1Mi
+          sizeLimit: 4Mi
       - name: db
         persistentVolumeClaim:
           claimName: db
