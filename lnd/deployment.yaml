@@ -20,7 +20,6 @@ spec:
       - name: lnd
         image: lnd # CHANGEME
         imagePullPolicy: IfNotPresent
-        workingDir: /
         ports:
         - name: network
           containerPort: 9735

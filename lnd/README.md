@@ -66,6 +66,12 @@ OCI manifest for `lnd`.
   kubectl apply --dry-run=server -f ./bootstrap/namespaces.yaml
   kubectl apply -f ./bootstrap/namespaces.yaml
   ```
+
+- Define lnd secrets
+  ```
+  kubectl create secret generic lnd-secrets --namespace=lnd --from-literal=BITCOIND_RPCPASS="U-JL.FNdKEU9Vkc-g9AjLk9rrAH.svev" --from-literal=WALLET_PASSWORD='F3s+rpgwwRukPmf,rtNAPpqdMAVRMV,c' --dry-run=client -o yaml | kubectl apply -f -
+  ```
+
 ### Infra
 
 #### local-path-provisioner
@@ -204,8 +210,62 @@ OCI manifest for `lnd`.
   kind: Kustomization
 
   resources:
-    - git@github.com:liv-io/oci-manifests.git//lnd?ref=main
+    - git@code.liv.io:liv/oci-manifests.git//lnd?ref=main
 
+  images:
+    - name: lnd
+      newName: code.liv.io/liv/lnd
+      newTag: 0.21.4-beta-1
+
+  patches:
+    - patch: |-
+        apiVersion: apps/v1
+        kind: Deployment
+        metadata:
+          name: lnd
+        spec:
+          template:
+            spec:
+              imagePullSecrets:
+                - name: code.liv.io
+              containers:
+                - name: lnd
+                  env:
+                    - name: BITCOIN_NETWORK
+                      value: "testnet3"
+                    - name: ALIAS
+                      value: "liv.io"
+                    - name: BITCOIND_RPCHOST
+                      value: "ext-latest.btc:18332"
+                    - name: BITCOIND_ZMQPUBRAWBLOCK
+                      value: "tcp://ext-latest.btc:5557"
+                    - name: BITCOIND_ZMQPUBRAWTX
+                      value: "tcp://ext-latest.btc:5558"
+                    - name: COLOR
+                      value: "#00cdfa"
+                    - name: EXTERNALIP
+                      value: "213.193.83.252"
+
+    - patch: |-
+        apiVersion: networking.k8s.io/v1
+        kind: Ingress
+        metadata:
+          name: lnd
+        spec:
+          tls:
+            - hosts:
+                - lnd-test.liv.io
+          rules:
+            - host: lnd-test.liv.io
+              http:
+                paths:
+                  - path: /
+                    pathType: Prefix
+                    backend:
+                      service:
+                        name: lnd
+                        port:
+                          number: 8080
   EOF
   ```
 
