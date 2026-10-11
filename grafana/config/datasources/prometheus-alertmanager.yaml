@@ -1,0 +1,15 @@
+apiVersion: 1
+
+datasources:
+  - name: Alertmanager
+    type: prometheus-alertmanager
+    uid: prometheus-alertmanager
+    url: http://alertmanager.alertmanager:9093
+    access: proxy
+    isDefault: false
+    editable: false
+    jsonData:
+      severity_critical: "critical"
+      severity_high: "high"
+      severity_warning: "warning"
+      severity_info: "info"

@@ -1,0 +1,50 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: grafana
+
+resources:
+  - pvc.yaml
+  - service.yaml
+  - deployment.yaml
+  - ingress.yaml
+
+images:
+  - name: grafana
+    newTag: 13.2.3-slim
+
+configMapGenerator:
+  - name: datasources
+    files:
+      - config/datasources/loki.yaml
+      - config/datasources/prometheus.yaml
+  - name: dashboards
+    files:
+      - config/dashboards/dashboards.yaml
+  - name: dashboards-ipmi
+    files:
+      - config/dashboards/ipmi_exporter.json
+  - name: dashboards-script
+    files:
+      - config/dashboards/script_status.json
+  - name: dashboards-ping
+    files:
+      - config/dashboards/ping_prober.json
+  - name: dashboards-system
+    files:
+      - config/dashboards/system_status.json
+  - name: dashboards-smokeping
+    files:
+      - config/dashboards/smokeping_prober.json
+  - name: dashboards-node
+    files:
+      - config/dashboards/node_exporter.json
+  - name: dashboards-firewall
+    files:
+      - config/dashboards/network_firewall.json
+  - name: dashboards-traffic
+    files:
+      - config/dashboards/network_traffic.json
+
+generatorOptions:
+  disableNameSuffixHash: true

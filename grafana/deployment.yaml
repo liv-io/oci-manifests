@@ -1,0 +1,130 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: grafana
+
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: grafana
+  template:
+    metadata:
+      labels:
+        app: grafana
+    spec:
+      securityContext:
+        fsGroup: 65534
+        fsGroupChangePolicy: Always
+      containers:
+      - name: grafana
+        image: grafana/grafana
+        imagePullPolicy: IfNotPresent
+        ports:
+        - name: http
+          containerPort: 3000
+          protocol: TCP
+        env:
+        - name: GF_FEATURE_TOGGLES_SPLASHSCREEN
+          value: "false"
+        - name: GF_PLUGINS_PREINSTALL_SYNC
+          value: "camptocamp-prometheus-alertmanager-datasource,grafana-clock-panel,grafana-piechart-panel,grafana-worldmap-panel"
+        - name: GF_SECURITY_ADMIN_USER
+          value: "admin"
+        - name: GF_SECURITY_ADMIN_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: grafana-secrets
+              key: GF_SECURITY_ADMIN_PASSWORD
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          privileged: false
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
+          runAsGroup: 65534
+          runAsUser: 65534
+        volumeMounts:
+        - name: storage
+          mountPath: /var/lib/grafana
+        - name: datasources
+          mountPath: /etc/grafana/provisioning/datasources
+        - name: bundled-plugins
+          mountPath: /usr/share/grafana/data/plugins-bundled
+        - name: dashboards
+          mountPath: /etc/grafana/provisioning/dashboards
+        # split dashboards due to ConfigMap payload limit of 256Ki
+        - name: dashboards-ipmi
+          mountPath: /var/lib/grafana/dashboards/ipmi_exporter.json
+          subPath: ipmi_exporter.json
+        - name: dashboards-script
+          mountPath: /var/lib/grafana/dashboards/script_status.json
+          subPath: script_status.json
+        - name: dashboards-ping
+          mountPath: /var/lib/grafana/dashboards/ping_prober.json
+          subPath: ping_prober.json
+        - name: dashboards-system
+          mountPath: /var/lib/grafana/dashboards/system_status.json
+          subPath: system_status.json
+        - name: dashboards-smokeping
+          mountPath: /var/lib/grafana/dashboards/smokeping_prober.json
+          subPath: smokeping_prober.json
+        - name: dashboards-node
+          mountPath: /var/lib/grafana/dashboards/node_exporter.json
+          subPath: node_exporter.json
+        - name: dashboards-firewall
+          mountPath: /var/lib/grafana/dashboards/network_firewall.json
+          subPath: network_firewall.json
+        - name: dashboards-traffic
+          mountPath: /var/lib/grafana/dashboards/network_traffic.json
+          subPath: network_traffic.json
+        - name: tmp
+          mountPath: /tmp
+      volumes:
+      - name: storage
+        persistentVolumeClaim:
+          claimName: storage
+      - name: datasources
+        configMap:
+          name: datasources
+      - name: bundled-plugins
+        emptyDir:
+          medium: Memory
+          sizeLimit: 128Mi
+      - name: dashboards
+        # split dashboards due to ConfigMap payload limit of 256Ki
+        configMap:
+          name: dashboards
+      - name: dashboards-ipmi
+        configMap:
+          name: dashboards-ipmi
+      - name: dashboards-script
+        configMap:
+          name: dashboards-script
+      - name: dashboards-ping
+        configMap:
+          name: dashboards-ping
+      - name: dashboards-system
+        configMap:
+          name: dashboards-system
+      - name: dashboards-smokeping
+        configMap:
+          name: dashboards-smokeping
+      - name: dashboards-node
+        configMap:
+          name: dashboards-node
+      - name: dashboards-firewall
+        configMap:
+          name: dashboards-firewall
+      - name: dashboards-traffic
+        configMap:
+          name: dashboards-traffic
+      - name: tmp
+        emptyDir:
+          medium: Memory
+          sizeLimit: 128Mi
