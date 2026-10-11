@@ -1,0 +1,91 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: btc
+
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: btc
+  template:
+    metadata:
+      labels:
+        app: btc
+    spec:
+      containers:
+      - name: bitcoin-core
+        image: bitcoin-core # CHANGEME
+        imagePullPolicy: IfNotPresent
+        workingDir: /
+        ports:
+        - name: network
+          containerPort: 8333
+          protocol: TCP
+        - name: rpc
+          containerPort: 8332
+          protocol: TCP
+        - name: zmqphblock
+          containerPort: 5555
+          protocol: TCP
+        - name: zmqphtx
+          containerPort: 5556
+          protocol: TCP
+        - name: zmqprblock
+          containerPort: 5557
+          protocol: TCP
+        - name: zmqprtx
+          containerPort: 5558
+          protocol: TCP
+        env:
+        - name: MAXUPLOADTARGET
+          value: "12000"
+        - name: DBCACHE
+          value: "512"
+        - name: PORT
+          value: "8333"
+        - name: RPCPORT
+          value: "8332"
+        - name: REST
+          value: "True"
+        - name: RPCALLOWIP
+          value: "0.0.0.0/0"
+        - name: RPCAUTH
+          valueFrom:
+            secretKeyRef:
+              name: btc-secrets
+              key: RPCAUTH
+        - name: RPCBIND
+          value: "0.0.0.0"
+        - name: RPCWORKQUEUE
+          value: "64"
+        - name: ZMQPUBHASHBLOCK
+          value: "tcp://0.0.0.0:5555"
+        - name: ZMQPUBHASHTX
+          value: "tcp://0.0.0.0:5556"
+        - name: ZMQPUBRAWBLOCK
+          value: "tcp://0.0.0.0:5557"
+        - name: ZMQPUBRAWTX
+          value: "tcp://0.0.0.0:5558"
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          privileged: false
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
+          runAsGroup: 10000
+          runAsUser: 10000
+        volumeMounts:
+        - name: db
+          mountPath: /var/local/bitcoin-core/db
+      imagePullSecrets:
+      - name: registry # CHANGEME
+      volumes:
+      - name: db
+        persistentVolumeClaim:
+          claimName: db
