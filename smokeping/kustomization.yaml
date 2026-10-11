@@ -1,0 +1,21 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: smokeping
+
+resources:
+  - service.yaml
+  - deployment.yaml
+  - ingress.yaml
+
+images:
+  - name: smokeping
+    newTag: v0.12.0
+
+configMapGenerator:
+  - name: config
+    files:
+      - config/smokeping.yaml
+
+generatorOptions:
+  disableNameSuffixHash: true

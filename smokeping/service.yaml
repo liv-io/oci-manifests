@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+
+metadata:
+  name: smokeping
+
+spec:
+  type: ClusterIP
+  ports:
+  - name: http
+    port: 9374
+    targetPort: 9374
+    protocol: TCP
+  selector:
+    app: smokeping

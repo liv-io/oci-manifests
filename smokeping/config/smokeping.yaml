@@ -1,0 +1,2 @@
+targets:
+  - { hosts: ["host.example.com"], protocol: udp, labels: { category: "web", instance: "host" } }
