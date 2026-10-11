@@ -1,0 +1,26 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+
+metadata:
+  name: alloy
+  annotations:
+    traefik.ingress.kubernetes.io/router.tls: "true"
+    traefik.ingress.kubernetes.io/router.tls.certresolver: "myresolver"
+    traefik.ingress.kubernetes.io/router.entrypoints: "websecure"
+
+spec:
+  ingressClassName: traefik
+  tls:
+    - hosts:
+        - alloy.example.com
+  rules:
+  - host: alloy.example.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: alloy
+            port:
+              number: 12345

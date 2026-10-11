@@ -1,0 +1,264 @@
+// syslog over TCP and UDP
+loki.source.syslog "syslog" {
+	listener {
+		address               = "0.0.0.0:1514"
+		protocol              = "tcp"
+		idle_timeout          = "1m0s"
+		label_structured_data = false
+		labels                = {job = "syslog"}
+		max_message_length    = 0
+	}
+
+	listener {
+		address               = "0.0.0.0:1514"
+		protocol              = "udp"
+		label_structured_data = false
+		labels                = {job = "syslog"}
+		max_message_length    = 0
+	}
+
+	forward_to    = [loki.relabel.clean.receiver]
+	relabel_rules = discovery.relabel.syslog.rules
+}
+
+// map syslog metadata (hostname, app-name)
+discovery.relabel "syslog" {
+	targets = []
+
+	rule {
+		source_labels = ["__syslog_message_app_name"]
+		target_label  = "app"
+	}
+
+	rule {
+		source_labels = ["__syslog_message_hostname"]
+		target_label  = "host"
+	}
+}
+
+// clean metadata labels before parsing
+loki.relabel "clean" {
+	forward_to = [loki.process.syslog.receiver]
+
+	rule {
+		action = "labeldrop"
+		regex  = "^(service_name|service-name|facility|severity)$"
+	}
+}
+
+// log processing and regex extraction pipeline
+loki.process "syslog" {
+	forward_to = [loki.write.default.receiver]
+
+	stage.label_drop {
+		values = ["facility", "service_name", "ip_address", "detected_level"]
+	}
+
+	// grafana
+	stage.match {
+		selector = "{app=\"grafana\"}"
+
+		stage.regex {
+			expression = "logger=(?P<logger>[^ ]*) t=(?P<time>[^ ]*) level=(?P<level>[^ ]*) msg=\"(?P<msg>[^\"]*)\" duration=(?P<duration>[^ ]*)"
+		}
+
+		stage.regex {
+			expression = "logger=(?P<logger>[^ ]*) t=(?P<time>[^ ]*) level=(?P<level>[^ ]*) msg=\"(?P<msg>[^\"]*)\" error=(?P<error>[^ ]*) traceID=(?P<traceID>[^ ]*)"
+		}
+
+		stage.regex {
+			expression = "logger=(?P<logger>[^ ]*) t=(?P<time>[^ ]*) level=(?P<level>[^ ]*) msg=\"(?P<msg>[^\"]*)\" error=(?P<error>[^ ]*) duration=(?P<duration>[^ ]*)"
+		}
+
+		stage.labels {
+			values = {level = null}
+		}
+
+		stage.match {
+			selector = "{level=\"critical\"}"
+
+			stage.static_labels {
+				values = {severity_normalized = "critical"}
+			}
+		}
+
+		stage.match {
+			selector = "{level=\"error\"}"
+
+			stage.static_labels {
+				values = {severity_normalized = "error"}
+			}
+		}
+
+		stage.match {
+			selector = "{level=\"warning\"}"
+
+			stage.static_labels {
+				values = {severity_normalized = "warning"}
+			}
+		}
+
+		stage.match {
+			selector = "{level=\"info\"}"
+
+			stage.static_labels {
+				values = {severity_normalized = "info"}
+			}
+		}
+
+		stage.match {
+			selector = "{level=\"debug\"}"
+
+			stage.static_labels {
+				values = {severity_normalized = "info"}
+			}
+		}
+
+		stage.output {
+			source = "msg"
+		}
+	}
+
+	// nginx
+	stage.match {
+		selector = "{app=\"nginx-access\"}"
+
+		stage.regex {
+			expression = "^(?P<nginx_remote_addr>\\S+) \\- \\- \\[[^]]+\\] \"(?P<nginx_request>[^\"]+)\" (?P<nginx_status>[0-9]{3}) \\d+ \"(?P<nginx_referer>[^\"]+)\" \"(?P<nginx_user_agent>[^\"]+)\"$"
+		}
+	}
+
+	stage.match {
+		selector = "{app=\"nginx-error\"}"
+
+		stage.regex {
+			expression = "^\\[(?P<timestamp>[^]]+)\\] \\[(?P<level>\\w+)\\] \\[(?P<pid>\\d+)\\]: \\* (?P<message>.*)$"
+		}
+
+		stage.timestamp {
+			source = "time"
+			format = "RFC3339"
+		}
+
+		stage.match {
+			selector = "{level=\"emerg\"}"
+
+			stage.static_labels {
+				values = {severity_normalized = "critical"}
+			}
+		}
+
+		stage.match {
+			selector = "{level=\"alert\"}"
+
+			stage.static_labels {
+				values = {severity_normalized = "critical"}
+			}
+		}
+
+		stage.match {
+			selector = "{level=\"critical\"}"
+
+			stage.static_labels {
+				values = {severity_normalized = "critical"}
+			}
+		}
+
+		stage.match {
+			selector = "{level=\"error\"}"
+
+			stage.static_labels {
+				values = {severity_normalized = "error"}
+			}
+		}
+
+		stage.match {
+			selector = "{level=\"warning\"}"
+
+			stage.static_labels {
+				values = {severity_normalized = "warning"}
+			}
+		}
+
+		stage.match {
+			selector = "{level=\"notice\"}"
+
+			stage.static_labels {
+				values = {severity_normalized = "info"}
+			}
+		}
+
+		stage.match {
+			selector = "{level=\"info\"}"
+
+			stage.static_labels {
+				values = {severity_normalized = "info"}
+			}
+		}
+	}
+
+	// openssh and auth
+	stage.match {
+		selector = "{job=\"syslog\"}"
+
+		stage.regex {
+			expression = "Accepted\\spublickey\\sfor\\s(?P<ssh_user>(\\w+))\\sfrom\\s(?P<ssh_source_ip>(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)){3})"
+		}
+	}
+
+	stage.match {
+		selector = "{job=\"syslog\"}"
+
+		stage.regex {
+			expression = "sshd.*session\\s(?P<ssh_session_state>(\\w+))\\sfor user\\s(?P<ssh_session_user>(\\w+)).*"
+		}
+	}
+
+	stage.match {
+		selector = "{job=\"syslog\"}"
+
+		stage.regex {
+			expression = "su.*session\\sopened\\sfor\\suser\\sroot\\sby\\s(?P<root_login_user>(\\w+))\\("
+		}
+
+		stage.labels {
+			values = {root_login_user = null}
+		}
+	}
+
+	// squid
+	stage.match {
+		selector = "{app=\"squid-access\"}"
+
+		stage.regex {
+			expression = "^(?P<timestamp>\\d+\\.\\d+)\\s+(?P<process_id>\\d+)\\s+(?P<client_ip>\\S+)\\s+(?P<protocol>\\S+)/(?P<status_code>\\d+)\\s+(?P<bytes>\\d+)\\s+CONNECT\\s+(?P<destination>\\S+):(?P<destination_port>\\d+)\\s+-\\s+(?P<hierarchy>\\S+)/(?P<server_ip>\\S+)\\s+-\\s*$"
+		}
+	}
+
+	stage.match {
+		selector = "{app=\"squid-error\"}"
+
+		stage.regex {
+			expression = "^(?P<timestamp>\\d{4}/\\d{2}/\\d{2} \\d{2}:\\d{2}:\\d{2})\\s+(?:kid(?P<kid>\\d+)\\|)?\\s*(?P<message>.*)$"
+		}
+	}
+
+	stage.label_keep {
+		values = [
+			"app",
+			"host",
+			"job",
+			"level",
+			"severity_normalized",
+		]
+	}
+}
+
+// write to loki
+loki.write "default" {
+	endpoint {
+		url       = "http://loki.loki:3100/loki/api/v1/push"
+		tenant_id = "tenant1"
+	}
+	external_labels = {}
+}

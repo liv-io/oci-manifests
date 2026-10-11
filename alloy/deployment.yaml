@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: alloy
+
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: alloy
+  template:
+    metadata:
+      labels:
+        app: alloy
+    spec:
+      containers:
+      - name: alloy
+        image: grafana/alloy
+        imagePullPolicy: IfNotPresent
+        args:
+          - "run"
+          - "/etc/alloy/config.alloy"
+          - "--server.http.listen-addr=0.0.0.0:12345"
+          - "--storage.path=/alloy"
+        ports:
+        - name: http
+          containerPort: 12345
+          protocol: TCP
+        - name: syslog-tcp
+          hostPort: 514
+          containerPort: 1514
+          protocol: TCP
+        - name: syslog-udp
+          hostPort: 514
+          containerPort: 1514
+          protocol: UDP
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          privileged: false
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
+          runAsGroup: 65534
+          runAsUser: 65534
+        volumeMounts:
+        - name: config
+          mountPath: /etc/alloy
+        - name: storage
+          mountPath: /alloy
+      volumes:
+      - name: config
+        configMap:
+          name: config
+      - name: storage
+        persistentVolumeClaim:
+          claimName: storage
