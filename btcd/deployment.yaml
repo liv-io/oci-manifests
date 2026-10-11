@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: btcd
+
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: btcd
+  template:
+    metadata:
+      labels:
+        app: btcd
+    spec:
+      containers:
+      - name: btcd
+        image: btcd # CHANGEME
+        imagePullPolicy: IfNotPresent
+        ports:
+        - name: network
+          containerPort: 8333
+          protocol: TCP
+        - name: rpc
+          containerPort: 8334
+          protocol: TCP
+        env:
+        - name: LISTEN
+          value: "0.0.0.0:8333"
+        - name: RPCLISTEN
+          value: "0.0.0.0:8334"
+        - name: RPCPASS
+          valueFrom:
+            secretKeyRef:
+              name: btcd-secrets
+              key: RPCPASS
+        - name: RPCUSER
+          value: "satoshi"
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          privileged: false
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
+          runAsGroup: 10000
+          runAsUser: 10000
+        volumeMounts:
+        - name: db
+          mountPath: /home/btcd/.btcd
+      imagePullSecrets:
+      - name: registry # CHANGEME
+      volumes:
+      - name: db
+        persistentVolumeClaim:
+          claimName: db
