@@ -1,0 +1,65 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: blockbook
+
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: blockbook
+  template:
+    metadata:
+      labels:
+        app: blockbook
+    spec:
+      containers:
+      - name: blockbook
+        image: blockbook # CHANGEME
+        imagePullPolicy: IfNotPresent
+        workingDir: /usr/local/share/blockbook
+        ports:
+        - name: blockbook
+          containerPort: 8080
+          protocol: TCP
+        env:
+        - name: MESSAGE_QUEUE_BINDING # CHANGEME
+          value: "tcp://ext.bitcoin-core:5558"
+        - name: PORT
+          value: "8080"
+        - name: RPC_PASS
+          valueFrom:
+            secretKeyRef:
+              name: blockbook-secrets
+              key: RPC_PASS
+        - name: RPC_URL # CHANGEME
+          value: "http://ext.bitcoin-core:8332"
+        - name: RPC_USER
+          value: "satoshi"
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          privileged: false
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
+          runAsGroup: 10000
+          runAsUser: 10000
+        volumeMounts:
+        - name: config
+          mountPath: /var/local/blockbook/config
+        - name: db
+          mountPath: /var/local/blockbook/db
+      imagePullSecrets:
+      - name: registry # CHANGEME
+      volumes:
+      - name: config
+        emptyDir:
+          sizeLimit: 1Mi
+      - name: db
+        persistentVolumeClaim:
+          claimName: db
