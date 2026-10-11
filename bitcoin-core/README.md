@@ -1,4 +1,4 @@
-# btc
+# bitcoin-core
 
 ## Index
 
@@ -12,7 +12,7 @@
     - [local-path-provisioner](#local-path-provisioner)
     - [traefik](#traefik)
   - [Apps](#apps)
-    - [btc](#btc)
+    - [bitcoin-core](#bitcoin-core)
 - [Commands](#commands)
 - [License](#license)
 - [Credits](#credits)
@@ -20,7 +20,7 @@
 
 ## About
 
-OCI manifest for `btc`.
+OCI manifest for `bitcoin-core`.
 
 ## Dependencies
 
@@ -56,7 +56,7 @@ OCI manifest for `btc`.
   kind: Namespace
 
   metadata:
-    name: btc
+    name: bitcoin-core
   EOF
   ```
 
@@ -67,9 +67,9 @@ OCI manifest for `btc`.
   kubectl apply -f ./bootstrap/namespaces.yaml
   ```
 
-- Define btc secrets
+- Define bitcoin-core secrets
   ```
-  kubectl -n btc create secret generic btc-secrets --from-literal=RPCAUTH='satoshi:d1eba766ee04c4920d14c63c5706981d$ea702a2c26661fde4096a1542efeb82406ea538ea2487b11d2d4f58d4e96c199'
+  kubectl -n bitcoin-core create secret generic bitcoin-core-secrets --from-literal=RPCAUTH='satoshi:d1eba766ee04c4920d14c63c5706981d$ea702a2c26661fde4096a1542efeb82406ea538ea2487b11d2d4f58d4e96c199'
   ```
 
 ### Infra
@@ -196,69 +196,69 @@ OCI manifest for `btc`.
 
 ### Apps
 
-#### btc
+#### bitcoin-core
 
 - Create manifest directory
   ```
-  install --directory --mode=0755 ./apps/btc
+  install --directory --mode=0755 ./apps/bitcoin-core
   ```
 
 - Patch upstream manifest
   ```
-  cat <<EOF > ./apps/btc/kustomization.yaml
+  cat <<EOF > ./apps/bitcoin-core/kustomization.yaml
   apiVersion: kustomize.config.k8s.io/v1beta1
   kind: Kustomization
 
   resources:
-    - git@github.com:liv-io/oci-manifests.git//btc?ref=main
+    - git@github.com:liv-io/oci-manifests.git//bitcoin-core?ref=main
 
   EOF
   ```
 
 - Render and apply manifest
   ```
-  kubectl apply --dry-run=client -k ./apps/btc/
-  kubectl apply --dry-run=server -k ./apps/btc/
-  kubectl apply -k ./apps/btc/
+  kubectl apply --dry-run=client -k ./apps/bitcoin-core/
+  kubectl apply --dry-run=server -k ./apps/bitcoin-core/
+  kubectl apply -k ./apps/bitcoin-core/
   ```
 
 - Validate deployment
   ```
-  kubectl rollout status -n btc deployment/btc
-  kubectl logs -n btc deployment/btc --tail=100
+  kubectl rollout status -n bitcoin-core deployment/bitcoin-core
+  kubectl logs -n bitcoin-core deployment/bitcoin-core --tail=100
   ```
 
-- Get `btc` health
+- Get `bitcoin-core` health
   ```
-  curl --proto '=https' --tlsv1.3 --request GET --location https://btc.liv.io
+  curl --proto '=https' --tlsv1.3 --request GET --location https://bitcoin-core.liv.io
   ```
 
 ## Commands
 
 - Stop container
   ```
-  kubectl scale deployment btc --replicas=0 -n btc
+  kubectl scale deployment bitcoin-core --replicas=0 -n bitcoin-core
   ```
 
 - Start container
   ```
-  kubectl scale deployment btc --replicas=1 -n btc
+  kubectl scale deployment bitcoin-core --replicas=1 -n bitcoin-core
   ```
 
 - Inspect container
   ```
-  kubectl exec -it -n btc deployment/btc -- ps -ef
-  kubectl exec -it -n btc deployment/btc -- btc --version
+  kubectl exec -it -n bitcoin-core deployment/bitcoin-core -- ps -ef
+  kubectl exec -it -n bitcoin-core deployment/bitcoin-core -- bitcoin-core --version
   ```
 
 - Show detailed description
   ```
-  kubectl describe pod -n btc
+  kubectl describe pod -n bitcoin-core
   ```
 
 - Inspect logs
   ```
-  kubectl logs -n btc deployment/btc --tail=100 -f
+  kubectl logs -n bitcoin-core deployment/bitcoin-core --tail=100 -f
   ```
 
 - Get image versions
@@ -276,4 +276,4 @@ See `CREDITS.md` file for more information.
 
 ## Appendix
 
-- [btc](https://lightning.engineering)
+- [bitcoin-core](https://lightning.engineering)

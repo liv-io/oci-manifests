@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 
 metadata:
-  name: btc
+  name: bitcoin-core
 
 spec:
   replicas: 1
@@ -10,11 +10,11 @@ spec:
     type: Recreate
   selector:
     matchLabels:
-      app: btc
+      app: bitcoin-core
   template:
     metadata:
       labels:
-        app: btc
+        app: bitcoin-core
     spec:
       containers:
       - name: bitcoin-core
@@ -55,7 +55,7 @@ spec:
         - name: RPCAUTH
           valueFrom:
             secretKeyRef:
-              name: btc-secrets
+              name: bitcoin-core-secrets
               key: RPCAUTH
         - name: RPCBIND
           value: "0.0.0.0"
