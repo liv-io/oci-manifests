@@ -78,6 +78,71 @@
 
 #### traefik
 
+- Create manifest directory
+  ```
+  install --directory --mode=0755 ./infra/traefik
+  ```
+
+- Patch upstream manifest
+  ```
+  cat <<EOF > ./infra/traefik/kustomization.yaml
+  apiVersion: kustomize.config.k8s.io/v1beta1
+  kind: Kustomization
+
+  resources:
+    - https://raw.githubusercontent.com/traefik/traefik/refs/tags/v3.7.14/docs/content/reference/dynamic-configuration/kubernetes-crd-definition-v1.yml
+    - https://raw.githubusercontent.com/traefik/traefik/v3.7.14/docs/content/reference/dynamic-configuration/kubernetes-crd-rbac.yml
+    - git@github.com:liv-io/oci-manifests.git//traefik?ref=main
+
+  configMapGenerator:
+    - name: internal-ca-cert
+      namespace: kube-system
+      behavior: replace
+      files:
+        - ca1.liv.io.crt
+
+  patches:
+    - patch: |-
+        apiVersion: apps/v1
+        kind: Deployment
+        metadata:
+          name: traefik
+          namespace: kube-system
+        spec:
+          template:
+            spec:
+              containers:
+                - name: traefik
+                  env:
+                    - name: LEGO_CA_CERTIFICATES
+                      value: /etc/traefik/ca/ca1.liv.io.crt
+
+    - target:
+        kind: Deployment
+        name: traefik
+        namespace: kube-system
+      patch: |-
+        - op: add
+          path: /spec/template/spec/containers/0/args/-
+          value: --certificatesresolvers.myresolver.acme.caserver=https://ca.liv.io/acme/acme/directory
+        - op: add
+          path: /spec/template/spec/containers/0/args/-
+          value: --certificatesresolvers.myresolver.acme.email=admin@liv.io
+  EOF
+  ```
+
+- Render and apply manifest
+  ```
+  kustomize build ./infra/traefik/ --enable-helm | kubectl apply --dry-run=client -f -
+  kustomize build ./infra/traefik/ --enable-helm | kubectl apply --dry-run=server -f -
+  kustomize build ./infra/traefik/ --enable-helm | kubectl apply -f -
+  ```
+
+- Validate deployment
+  ```
+  kubectl rollout status -n kube-system deployment/traefik
+  kubectl get all -n kube-system -l app.kubernetes.io/name=traefik
+  ```
 
 ## License
 
