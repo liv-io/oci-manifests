@@ -12,9 +12,9 @@ spec:
   ingressClassName: traefik
   tls:
     - hosts:
-        - alloy.example.com
+        - alloy.example.com # CHANGEME
   rules:
-  - host: alloy.example.com
+  - host: alloy.example.com # CHANGEME
     http:
       paths:
       - path: /
