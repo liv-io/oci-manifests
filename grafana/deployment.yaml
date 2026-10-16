@@ -41,6 +41,13 @@ spec:
             secretKeyRef:
               name: grafana-secrets
               key: GF_SECURITY_ADMIN_PASSWORD
+        # required to download plugins behind forward proxy
+        #- name: HTTP_PROXY
+        #  value: "http://proxy.example.com:3128"
+        #- name: HTTPS_PROXY
+        #  value: "http://proxy.example.com:3128"
+        #- name: NO_PROXY
+        #  value: ""
         securityContext:
           allowPrivilegeEscalation: false
           capabilities:
