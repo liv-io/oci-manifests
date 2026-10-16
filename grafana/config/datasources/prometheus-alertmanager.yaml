@@ -4,7 +4,7 @@ datasources:
   - name: Alertmanager
     type: prometheus-alertmanager
     uid: prometheus-alertmanager
-    url: http://alertmanager.alertmanager:9093
+    url: http://alertmanager.alertmanager.svc.cluster.local:9093
     access: proxy
     isDefault: false
     editable: false
