@@ -95,7 +95,7 @@ spec:
       - name: bundled-plugins
         emptyDir:
           medium: Memory
-          sizeLimit: 128Mi
+          sizeLimit: 512Mi
       - name: dashboards
         # split dashboards due to ConfigMap payload limit of 256Ki
         configMap:
