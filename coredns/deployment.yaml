@@ -52,7 +52,6 @@ spec:
       volumes:
       - name: config
         emptyDir:
-          medium: Memory
           sizeLimit: 4Mi
       - name: zones
         configMap:
