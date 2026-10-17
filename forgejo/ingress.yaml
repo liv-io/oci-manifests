@@ -1,0 +1,26 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+
+metadata:
+  name: forgejo
+  annotations:
+    traefik.ingress.kubernetes.io/router.tls: "true"
+    traefik.ingress.kubernetes.io/router.tls.certresolver: "myresolver"
+    traefik.ingress.kubernetes.io/router.entrypoints: "websecure"
+
+spec:
+  ingressClassName: traefik
+  tls:
+    - hosts:
+        - code.example.com # CHANGEME
+  rules:
+  - host: code.example.com # CHANGEME
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: forgejo
+            port:
+              number: 3000

@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+
+metadata:
+  name: ssh
+
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: local-path
+  resources:
+    requests:
+      storage: 64Mi # CHANGEME
+
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+
+metadata:
+  name: work
+
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: local-path
+  resources:
+    requests:
+      storage: 50Gi # CHANGEME

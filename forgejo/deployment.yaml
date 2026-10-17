@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: forgejo
+
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: forgejo
+  template:
+    metadata:
+      labels:
+        app: forgejo
+    spec:
+      containers:
+      - name: forgejo
+        image: forgejo # CHANGEME
+        imagePullPolicy: IfNotPresent
+        ports:
+        - name: http
+          containerPort: 3000
+          protocol: TCP
+        env:
+        - name: PORT
+          value: 3000
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          privileged: false
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
+          runAsGroup: 10000
+          runAsUser: 10000
+        volumeMounts:
+        - name: ssh
+          mountPath: /var/local/forgejo/ssh
+        - name: work
+          mountPath: /var/local/forgejo/work
+        - name: tmp
+          mountPath: /tmp
+      imagePullSecrets:
+      - name: registry # CHANGEME
+      volumes:
+      - name: ssh
+        persistentVolumeClaim:
+          claimName: ssh
+      - name: work
+        persistentVolumeClaim:
+          claimName: work
+      - name: tmp
+        emptyDir:
+          sizeLimit: 128Mi
