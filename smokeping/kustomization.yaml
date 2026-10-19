@@ -9,7 +9,7 @@ resources:
   - ingress.yaml
 
 images:
-  - name: smokeping
+  - name: quay.io/superq/smokeping-prober
     newTag: v0.12.0
 
 configMapGenerator:

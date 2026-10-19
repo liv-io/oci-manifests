@@ -10,7 +10,7 @@ resources:
   - ingress.yaml
 
 images:
-  - name: loki
+  - name: grafana/loki
     newTag: 3.7.8
 
 configMapGenerator:

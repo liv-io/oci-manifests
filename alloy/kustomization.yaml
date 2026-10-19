@@ -10,8 +10,8 @@ resources:
   - ingress.yaml
 
 images:
-  - name: alloy
-    newTag: v1.20.1
+  - name: grafana/alloy
+    newTag: v1.21.0
 
 configMapGenerator:
   - name: config

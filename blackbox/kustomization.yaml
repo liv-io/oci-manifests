@@ -9,7 +9,7 @@ resources:
   - ingress.yaml
 
 images:
-  - name: blackbox
+  - name: quay.io/prometheus/blackbox-exporter
     newTag: v0.29.0
 
 configMapGenerator:

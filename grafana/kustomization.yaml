@@ -10,7 +10,7 @@ resources:
   - ingress.yaml
 
 images:
-  - name: grafana
+  - name: grafana/grafana
     newTag: 13.2.3-slim
 
 configMapGenerator:

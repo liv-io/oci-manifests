@@ -9,7 +9,7 @@ resources:
   - ingress.yaml
 
 images:
-  - name: alertmanager
+  - name: quay.io/prometheus/alertmanager
     newTag: v0.34.1
 
 configMapGenerator:

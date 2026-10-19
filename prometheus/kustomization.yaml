@@ -10,7 +10,7 @@ resources:
   - ingress.yaml
 
 images:
-  - name: prometheus
+  - name: quay.io/prometheus/prometheus
     newTag: v3.15.0
 
 configMapGenerator:
