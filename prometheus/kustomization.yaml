@@ -11,7 +11,7 @@ resources:
 
 images:
   - name: quay.io/prometheus/prometheus
-    newTag: v3.15.0
+    newTag: v3.15.1
 
 configMapGenerator:
   - name: config
