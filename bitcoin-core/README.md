@@ -131,7 +131,7 @@ OCI manifest for `bitcoin-core`.
 - Inspect container
   ```
   kubectl exec -it -n bitcoin-core deployment/bitcoin-core -- ps -ef
-  kubectl exec -it -n bitcoin-core deployment/bitcoin-core -- bitcoin-core --version
+  kubectl exec -it -n bitcoin-core deployment/bitcoin-core -- bitcoind -datadir=/var/local/bitcoin-core/db --version
   ```
 
 - Show detailed description

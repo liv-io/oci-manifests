@@ -28,7 +28,7 @@ OCI manifest for `blackbox`.
 |Name|Type|Version|
 |:---|:---|:---|
 |[blackbox-exporter](https://quay.io/repository/prometheus/blackbox-exporter)|Container|`0.29.0`|
-|[traefik-helm-chart](https://github.com/traefik/traefik-helm-chart)|Helm|`41.7.1`|
+|[traefik-helm-chart](https://github.com/traefik/traefik-helm-chart)|Helm|`42.1.3`|
 
 ## Deployment
 

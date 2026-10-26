@@ -28,7 +28,7 @@ OCI manifest for `forgejo`.
 |Name|Type|Version|
 |:---|:---|:---|
 |[forgejo](https://github.com/liv-io/oci-containers/tree/main/forgejo)|Container|`17.0.0-1`|
-|[traefik-helm-chart](https://github.com/traefik/traefik-helm-chart)|Helm|`42.0.0`|
+|[traefik-helm-chart](https://github.com/traefik/traefik-helm-chart)|Helm|`42.1.3`|
 
 ## Deployment
 

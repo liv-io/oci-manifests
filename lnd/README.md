@@ -30,7 +30,7 @@ OCI manifest for `lnd`.
 |:---|:---|:---|
 |[lnd](https://github.com/liv-io/oci-containers/tree/main/lnd)|Container|`0.21.4-beta-1`|
 |[local-path-provisioner](https://github.com/rancher/local-path-provisioner)|Kustomize|`0.0.37`|
-|[traefik-helm-chart](https://github.com/traefik/traefik-helm-chart)|Helm|`41.7.1`|
+|[traefik-helm-chart](https://github.com/traefik/traefik-helm-chart)|Helm|`42.1.3`|
 
 ## Deployment
 

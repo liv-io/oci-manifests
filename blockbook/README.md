@@ -30,7 +30,7 @@ OCI manifest for `blockbook`.
 |:---|:---|:---|
 |[blockbook](https://github.com/liv-io/oci-containers/tree/main/blockbook)|Container|`0.6.0-1`|
 |[local-path-provisioner](https://github.com/rancher/local-path-provisioner)|Kustomize|`0.0.37`|
-|[traefik-helm-chart](https://github.com/traefik/traefik-helm-chart)|Helm|`41.7.1`|
+|[traefik-helm-chart](https://github.com/traefik/traefik-helm-chart)|Helm|`42.1.3`|
 
 ## Deployment
 

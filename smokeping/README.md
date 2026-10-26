@@ -28,7 +28,7 @@ OCI manifest for `smokeping`.
 |Name|Type|Version|
 |:---|:---|:---|
 |[smokeping-prober](https://quay.io/repository/superq/smokeping-prober)|Container|`0.12.0`|
-|[traefik-helm-chart](https://github.com/traefik/traefik-helm-chart)|Helm|`41.7.1`|
+|[traefik-helm-chart](https://github.com/traefik/traefik-helm-chart)|Helm|`42.1.3`|
 
 ## Deployment
 
