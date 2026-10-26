@@ -1,7 +1,7 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
-namespace: ingot
+namespace: larix
 
 resources:
   - deployment.yaml
@@ -9,5 +9,5 @@ resources:
   - ingress.yaml
 
 images:
-  - name: ingot # CHANGEME
+  - name: larix # CHANGEME
     newTag: 0.1.0

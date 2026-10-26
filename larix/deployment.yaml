@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 
 metadata:
-  name: ingot
+  name: larix
 
 spec:
   replicas: 1
@@ -10,15 +10,15 @@ spec:
     type: Recreate
   selector:
     matchLabels:
-      app: ingot
+      app: larix
   template:
     metadata:
       labels:
-        app: ingot
+        app: larix
     spec:
       containers:
-      - name: ingot
-        image: ingot # CHANGEME
+      - name: larix
+        image: larix # CHANGEME
         imagePullPolicy: IfNotPresent
         ports:
         - name: http
@@ -36,7 +36,7 @@ spec:
           runAsUser: 10000
         volumeMounts:
         - name: data
-          mountPath: /var/local/ingot/data
+          mountPath: /var/local/larix/data
           readOnly: true
       imagePullSecrets:
       - name: registry # CHANGEME

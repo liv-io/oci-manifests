@@ -2,7 +2,7 @@ apiVersion: v1
 kind: Service
 
 metadata:
-  name: ingot
+  name: larix
 
 spec:
   type: ClusterIP
@@ -12,4 +12,4 @@ spec:
     targetPort: 8080
     protocol: TCP
   selector:
-    app: ingot
+    app: larix

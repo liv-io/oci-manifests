@@ -1,4 +1,4 @@
-# ingot
+# larix
 
 ## Index
 
@@ -11,7 +11,7 @@
   - [Infra](#infra)
     - [traefik](#traefik)
   - [Apps](#apps)
-    - [ingot](#ingot)
+    - [larix](#larix)
 - [Commands](#commands)
 - [License](#license)
 - [Credits](#credits)
@@ -19,7 +19,7 @@
 
 ## About
 
-OCI manifest for `ingot`.
+OCI manifest for `larix`.
 
 ## Dependencies
 
@@ -27,7 +27,7 @@ OCI manifest for `ingot`.
 
 |Name|Type|Version|
 |:---|:---|:---|
-|[ingot](https://github.com/liv-io/oci-containers/tree/main/ingot)|Container|`0.1.0`|
+|[larix](https://github.com/liv-io/oci-containers/tree/main/larix)|Container|`0.1.0`|
 |[traefik-helm-chart](https://github.com/traefik/traefik-helm-chart)|Helm|`41.5.0`|
 
 ## Deployment
@@ -54,7 +54,7 @@ OCI manifest for `ingot`.
   kind: Namespace
 
   metadata:
-    name: ingot
+    name: larix
   EOF
   ```
 
@@ -73,51 +73,51 @@ OCI manifest for `ingot`.
 
 ### Apps
 
-#### ingot
+#### larix
 
 - Create manifest directory
   ```
-  install --directory --mode=0755 ./apps/ingot
+  install --directory --mode=0755 ./apps/larix
   ```
 
 - Patch upstream manifest
   ```
-  cat <<EOF > ./apps/ingot/kustomization.yaml
+  cat <<EOF > ./apps/larix/kustomization.yaml
   EOF
   ```
 
 - Validate deployment
   ```
-  kubectl rollout status -n ingot deployment/ingot
-  kubectl logs -n ingot deployment/ingot --tail=100
+  kubectl rollout status -n larix deployment/larix
+  kubectl logs -n larix deployment/larix --tail=100
   ```
 
 ## Commands
 
 - Stop container
   ```
-  kubectl scale deployment ingot --replicas=0 -n ingot
+  kubectl scale deployment larix --replicas=0 -n larix
   ```
 
 - Start container
   ```
-  kubectl scale deployment ingot --replicas=1 -n ingot
+  kubectl scale deployment larix --replicas=1 -n larix
   ```
 
 - Inspect container
   ```
-  kubectl exec -it -n ingot deployment/ingot -- ps -ef
-  kubectl exec -it -n ingot deployment/ingot -- ingot --version
+  kubectl exec -it -n larix deployment/larix -- ps -ef
+  kubectl exec -it -n larix deployment/larix -- larix --version
   ```
 
 - Show detailed description
   ```
-  kubectl describe pod -n ingot
+  kubectl describe pod -n larix
   ```
 
 - Inspect logs
   ```
-  kubectl logs -n ingot deployment/ingot --tail=100 -f
+  kubectl logs -n larix deployment/larix --tail=100 -f
   ```
 
 - Get image versions
@@ -135,4 +135,4 @@ See `CREDITS.md` file for more information.
 
 ## Appendix
 
-- [ingot](https://github.com/liv-io/oci-containers/tree/main/ingot)
+- [larix](https://github.com/liv-io/oci-containers/tree/main/larix)
