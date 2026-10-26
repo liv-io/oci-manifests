@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: ingot
+
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: ingot
+  template:
+    metadata:
+      labels:
+        app: ingot
+    spec:
+      containers:
+      - name: ingot
+        image: ingot # CHANGEME
+        imagePullPolicy: IfNotPresent
+        ports:
+        - name: http
+          containerPort: 8080
+          protocol: TCP
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          privileged: false
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
+          runAsGroup: 10000
+          runAsUser: 10000
+        volumeMounts:
+        - name: data
+          mountPath: /var/local/ingot/data
+          readOnly: true
+      imagePullSecrets:
+      - name: registry # CHANGEME
+      volumes:
+      - name: data
+        hostPath:
+          path: /opt/example.com # CHANGEME
+          type: Directory
