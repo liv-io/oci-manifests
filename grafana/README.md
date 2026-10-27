@@ -28,7 +28,7 @@ OCI manifest for `grafana`.
 
 |Name|Type|Version|
 |:---|:---|:---|
-|[grafana](https://hub.docker.com/grafana/grafana)|Container|`13.2.3`|
+|[grafana](https://hub.docker.com/grafana/grafana)|Container|`13.3.0-slim`|
 |[local-path-provisioner](https://github.com/rancher/local-path-provisioner)|Kustomize|`0.0.37`|
 |[traefik-helm-chart](https://github.com/traefik/traefik-helm-chart)|Helm|`42.1.3`|
 
