@@ -27,7 +27,7 @@ OCI manifest for `bitcoin-core`.
 
 |Name|Type|Version|
 |:---|:---|:---|
-|[bitcoin-core](https://github.com/liv-io/oci-containers/tree/main/bitcoin-core)|Container|`31.1-1`|
+|[bitcoin-core](https://github.com/liv-io/oci-containers/tree/main/bitcoin-core)|Container|`32.1-1`|
 |[local-path-provisioner](https://github.com/rancher/local-path-provisioner)|Kustomize|`0.0.37`|
 
 ## Deployment
