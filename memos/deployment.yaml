@@ -24,9 +24,6 @@ spec:
         - name: http
           containerPort: 8081
           protocol: TCP
-        env:
-        - name: PORT
-          value: '8081'
         securityContext:
           allowPrivilegeEscalation: false
           capabilities:
