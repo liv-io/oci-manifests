@@ -142,7 +142,7 @@ OCI manifest for `memos`.
   kubectl logs -n memos deployment/memos --tail=100
   ```
 
-- Get `coredns` health
+- Get `memos` health
   ```
   curl --proto '=https' --tlsv1.3 --request GET --location https://memos.liv.io/healthz
   ```
