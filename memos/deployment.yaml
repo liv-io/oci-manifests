@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
       - name: memos
-        image: memos # CHANGEMe
+        image: memos # CHANGEME
         imagePullPolicy: IfNotPresent
         ports:
         - name: http

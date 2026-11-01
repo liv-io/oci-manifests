@@ -89,6 +89,43 @@ OCI manifest for `memos`.
   resources:
     - git@github.com:liv-io/oci-manifests.git//memos?ref=main
 
+  images:
+    - name: memos
+      newName: code.liv.io/liv/memos
+      newTag: 26.10.0-1
+
+  patches:
+    - patch: |-
+        apiVersion: apps/v1
+        kind: Deployment
+        metadata:
+          name: memos
+        spec:
+          template:
+            spec:
+              imagePullSecrets:
+                - name: code.liv.io
+
+    - patch: |-
+        apiVersion: networking.k8s.io/v1
+        kind: Ingress
+        metadata:
+          name: memos
+        spec:
+          tls:
+            - hosts:
+                - memos.liv.io
+          rules:
+            - host: memos.liv.io
+              http:
+                paths:
+                  - path: /
+                    pathType: Prefix
+                    backend:
+                      service:
+                        name: memos
+                        port:
+                          number: 8081
   EOF
   ```
 
@@ -103,6 +140,11 @@ OCI manifest for `memos`.
   ```
   kubectl rollout status -n memos deployment/memos
   kubectl logs -n memos deployment/memos --tail=100
+  ```
+
+- Get `coredns` health
+  ```
+  curl --proto '=https' --tlsv1.3 --request GET --location https://memos.liv.io/healthz
   ```
 
 ## Commands
