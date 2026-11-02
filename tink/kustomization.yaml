@@ -10,4 +10,4 @@ resources:
 
 images:
   - name: tink # CHANGEME
-    newTag: 0.1.10-1
+    newTag: 0.1.10
