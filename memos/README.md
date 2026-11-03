@@ -28,7 +28,7 @@ OCI manifest for `memos`.
 |Name|Type|Version|
 |:---|:---|:---|
 |[memos](https://github.com/liv-io/oci-containers/tree/main/memos)|Container|`26.11.0-1`|
-|[traefik-helm-chart](https://github.com/traefik/traefik-helm-chart)|Helm|`42.1.3`|
+|[traefik-helm-chart](https://github.com/traefik/traefik-helm-chart)|Helm|`42.3.0`|
 
 ## Deployment
 

@@ -28,7 +28,7 @@ OCI manifest for `tink`.
 |Name|Type|Version|
 |:---|:---|:---|
 |[tink](https://github.com/liv-io/tink)|Container|`0.1.10`|
-|[traefik-helm-chart](https://github.com/traefik/traefik-helm-chart)|Helm|`42.1.3`|
+|[traefik-helm-chart](https://github.com/traefik/traefik-helm-chart)|Helm|`42.3.0`|
 
 ## Deployment
 
