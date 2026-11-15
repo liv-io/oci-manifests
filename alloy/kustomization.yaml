@@ -11,7 +11,7 @@ resources:
 
 images:
   - name: grafana/alloy
-    newTag: v1.21.3
+    newTag: v1.22.0
 
 configMapGenerator:
   - name: config
