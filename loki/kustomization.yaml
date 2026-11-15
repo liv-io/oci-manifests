@@ -11,7 +11,7 @@ resources:
 
 images:
   - name: grafana/loki
-    newTag: 3.7.9
+    newTag: 3.7.10
 
 configMapGenerator:
   - name: config
