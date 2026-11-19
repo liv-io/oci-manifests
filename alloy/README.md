@@ -30,7 +30,7 @@ OCI manifest for `alloy`.
 |:---|:---|:---|
 |[alloy](https://hub.docker.com/grafana/alloy)|Container|`1.21.3`|
 |[local-path-provisioner](https://github.com/rancher/local-path-provisioner)|Kustomize|`0.0.37`|
-|[traefik-helm-chart](https://github.com/traefik/traefik-helm-chart)|Helm|`42.4.0`|
+|[traefik-helm-chart](https://github.com/traefik/traefik-helm-chart)|Helm|`42.4.1`|
 
 ## Deployment
 
