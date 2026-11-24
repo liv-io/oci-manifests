@@ -83,6 +83,59 @@ OCI manifest for `rest-server`.
 - Patch upstream manifest
   ```
   cat <<EOF > ./apps/rest-server/kustomization.yaml
+  apiVersion: kustomize.config.k8s.io/v1beta1
+  kind: Kustomization
+
+  resources:
+    - git@github.com:liv-io/oci-manifests.git//rest-server?ref=main
+
+  images:
+    - name: rest-server
+      newName: code.liv.io/liv/rest-server
+      newTag: 0.15.0-1
+
+  patches:
+    - patch: |-
+        apiVersion: v1
+        kind: PersistentVolumeClaim
+        metadata:
+          name: data
+        spec:
+          resources:
+            requests:
+              storage: 1000Gi
+
+    - patch: |-
+        apiVersion: apps/v1
+        kind: Deployment
+        metadata:
+          name: rest-server
+        spec:
+          template:
+            spec:
+              imagePullSecrets:
+                - name: code.liv.io
+
+    - patch: |-
+        apiVersion: networking.k8s.io/v1
+        kind: Ingress
+        metadata:
+          name: rest-server
+        spec:
+          tls:
+            - hosts:
+                - backup.liv.io
+          rules:
+            - host: backup.liv.io
+              http:
+                paths:
+                  - path: /
+                    pathType: Prefix
+                    backend:
+                      service:
+                        name: rest-server
+                        port:
+                          number: 8080
   EOF
   ```
 
