@@ -1,0 +1,63 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: rest-server
+
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: rest-server
+  template:
+    metadata:
+      labels:
+        app: rest-server
+    spec:
+      containers:
+      - name: rest-server
+        image: rest-server # CHANGEME
+        imagePullPolicy: IfNotPresent
+        ports:
+        - name: http
+          containerPort: 8000
+          protocol: TCP
+        env:
+        - name: AUTH # CHANGEME
+          valueFrom:
+            secretKeyRef:
+              name: rest-server-secrets
+              key: AUTH
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          privileged: false
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
+          runAsGroup: 10000
+          runAsUser: 10000
+        volumeMounts:
+        - name: config
+          mountPath: /var/local/rest-server/config
+        - name: data
+          mountPath: /var/local/rest-server/data
+        - name: tmp
+          mountPath: /tmp
+      imagePullSecrets: 
+      - name: registry # CHANGEME
+      volumes:
+      - name: config
+        emptyDir:
+          medium: Memory
+          sizeLimit: 4Mi
+      - name: data
+        persistentVolumeClaim:
+          claimName: data
+      - name: tmp
+        emptyDir:
+          medium: Memory
+          sizeLimit: 4Mi
