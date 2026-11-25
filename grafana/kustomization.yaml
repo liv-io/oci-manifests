@@ -11,7 +11,7 @@ resources:
 
 images:
   - name: grafana/grafana
-    newTag: 13.3.1-slim
+    newTag: 13.3.2-slim
 
 configMapGenerator:
   - name: datasources
