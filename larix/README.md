@@ -28,7 +28,7 @@ OCI manifest for `larix`.
 |Name|Type|Version|
 |:---|:---|:---|
 |[larix](https://github.com/liv-io/oci-containers/tree/main/larix)|Container|`0.1.0`|
-|[traefik-helm-chart](https://github.com/traefik/traefik-helm-chart)|Helm|`42.4.1`|
+|[traefik-helm-chart](https://github.com/traefik/traefik-helm-chart)|Helm|`43.0.0`|
 
 ## Deployment
 

@@ -30,7 +30,7 @@ OCI manifest for `prometheus`.
 |:---|:---|:---|
 |[prometheus](https://quay.io/prometheus/prometheus)|Container|`3.15.0`|
 |[local-path-provisioner](https://github.com/rancher/local-path-provisioner)|Kustomize|`0.0.37`|
-|[traefik-helm-chart](https://github.com/traefik/traefik-helm-chart)|Helm|`42.4.1`|
+|[traefik-helm-chart](https://github.com/traefik/traefik-helm-chart)|Helm|`43.0.0`|
 
 ## Deployment
 

@@ -28,7 +28,7 @@ OCI manifest for `alertmanager`.
 |Name|Type|Version|
 |:---|:---|:---|
 |[alertmanager](https://quay.io/repository/prometheus/alertmanager)|Container|`0.35.1`|
-|[traefik-helm-chart](https://github.com/traefik/traefik-helm-chart)|Helm|`42.4.1`|
+|[traefik-helm-chart](https://github.com/traefik/traefik-helm-chart)|Helm|`43.0.0`|
 
 ## Deployment
 
