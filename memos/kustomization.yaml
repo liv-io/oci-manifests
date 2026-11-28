@@ -11,4 +11,4 @@ resources:
 
 images:
   - name: memos # CHANGEME
-    newTag: 26.11.2-1
+    newTag: 26.11.3-1
